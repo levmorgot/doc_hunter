@@ -28,5 +28,6 @@ class DepartmentsRepository:
             limit: int = 15,
             skip: int = 0
     ) -> List[Department]:
-        all_filials = await self.get_all_departments_in_filial(filial_id, filial_cash_id)
-        return [filial for filial in all_filials if search_string in filial.name.lower()][skip: skip + limit]
+        all_departments = await self.get_all_departments_in_filial(filial_id, filial_cash_id)
+        return [department for department in all_departments if search_string in department.name.lower()][
+               skip: skip + limit]
