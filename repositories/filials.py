@@ -18,19 +18,26 @@ class FilialsRepository:
             response = await client.get(url)
             response.raise_for_status()
 
-        data = response.json()["data"]
-        filials_json = []
-        for filial_json in data:
-            if "cashId" in filial_json:
-                if "address" not in filial_json:
-                    filial_json["address"] = ""
-                if "phone" not in filial_json:
-                    filial_json["phone"] = ""
-                filials_json.append(filial_json)
+        return self._filter_bad_items(response.json()["data"])
 
-        return filials_json
+    async def search_filial(
+            self,
+            search_string: str = "",
+            limit: int = 15,
+            skip: int = 0
+    ) -> List[Filial]:
 
-    async def search_filial(self, search_string: str = "", limit: int = 15, skip: int = 0) -> List[Filial]:
         all_filials = await self.get_all_filials()
         return [filial for filial in all_filials if
                 search_string in filial.name.lower() or search_string in filial.address.lower()][skip: skip + limit]
+
+    def _filter_bad_items(self, data):
+        filtered_filials = []
+        for filial in data:
+            if "cashId" in filial:
+                if "address" not in filial:
+                    filial["address"] = ""
+                if "phone" not in filial:
+                    filial["phone"] = ""
+                filtered_filials.append(filial)
+        return filtered_filials
