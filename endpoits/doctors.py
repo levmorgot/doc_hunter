@@ -1,5 +1,5 @@
 from typing import List
-import datetime
+
 from fastapi import APIRouter, Depends
 
 from endpoits.depends import get_doctors_repository
@@ -16,10 +16,7 @@ async def get_all_doctors_in_department(
         department_id: int,
         departments: DoctorsRepository = Depends(get_doctors_repository)
 ):
-    start = datetime.datetime.now()
     result = await departments.get_all_doctors_in_department(filial_id, filial_cash_id, department_id)
-    end = datetime.datetime.now()
-    print(end - start)
     return result
 
 

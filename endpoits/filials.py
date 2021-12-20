@@ -1,10 +1,8 @@
 from typing import List
-import datetime
+
 from fastapi import APIRouter, Depends
 
 from endpoits.depends import get_filial_repository
-
-
 from models.filials import Filial
 from repositories.filials import FilialsRepository
 
@@ -13,11 +11,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[Filial])
 async def get_all_filials(filials: FilialsRepository = Depends(get_filial_repository)):
-    start = datetime.datetime.now()
-    result = await filials.get_all_filials()
-    end = datetime.datetime.now()
-    print(end - start)
-    return result
+    return await filials.get_all_filials()
 
 
 @router.get("/search/{search_string}", response_model=List[Filial])

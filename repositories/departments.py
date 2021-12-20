@@ -2,12 +2,14 @@ import httpx
 from typing import List
 
 from common.utils.cache import redis_cache
+from common.utils.speed_test import speed_test
 from core.config import BASE_URL
 from models.departments import to_department, Department
 
 
 class DepartmentsRepository:
 
+    @speed_test
     @to_department
     @redis_cache("departments", 60)
     async def get_all_departments_in_filial(self, filial_id, filial_cash_id):
@@ -20,6 +22,7 @@ class DepartmentsRepository:
 
         return data
 
+    @speed_test
     async def search_departments_in_filial(
             self,
             filial_id,

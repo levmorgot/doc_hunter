@@ -2,12 +2,15 @@ import httpx
 from typing import List
 
 from common.utils.cache import redis_cache
+from common.utils.speed_test import speed_test
+
 from core.config import BASE_URL
 from models.filials import Filial, to_filial
 
 
 class FilialsRepository:
 
+    @speed_test
     @to_filial
     @redis_cache("filials", 60)
     async def get_all_filials(self):
@@ -20,6 +23,7 @@ class FilialsRepository:
 
         return self._filter_bad_items(response.json()["data"])
 
+    @speed_test
     async def search_filial(
             self,
             search_string: str = "",
