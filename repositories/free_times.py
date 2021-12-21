@@ -50,7 +50,7 @@ class FreeTimesRepository:
 
     async def _get_free_times(self, filial_id, filial_cash_id, department_id, doctor_id, doctor_name, free_dates):
         if len(free_dates):
-            url = f"https://registratura.volganet.ru/api/reservation/intervals?st={free_dates[0]}&en={free_dates[-1]}&spec={department_id}&dcode={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&inFilials={filial_id}"
+            url = f"{BASE_URL}api/reservation/intervals?st={free_dates[0]}&en={free_dates[-1]}&spec={department_id}&dcode={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&inFilials={filial_id}"
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 response.raise_for_status()
