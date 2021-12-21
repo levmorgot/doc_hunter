@@ -30,8 +30,6 @@ class FreeTimesRepository:
         data = await self._get_data_for_doctor(filial_id, filial_cash_id, department_id, doctor_id, start, end)
 
         free_dates = [times["workDate"] for times in data["intervals"] if times["isFree"]]
-        free_dates.append("20211222")
-        free_dates.append("20211225")
 
         free_times = await self._get_free_times(
             filial_id,
