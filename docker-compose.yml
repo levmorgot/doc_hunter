@@ -1,16 +1,15 @@
 version: '3.8'
 
 services:
-    microservice:
+    doc_hunter_service:
         build:
-            context: ./microservice
-        image: cache-async-few-threads-microservice
-        container_name: cache-async-few-threads-microservice
+            context: ./doc_hunter_service
+        image: doc-hunter-service
+        container_name: doc-hunter-service
         restart: unless-stopped
         ports:
             - "8000:8000"
-        # work in few threads
-        command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker cache-async-few-threads-microservice:api
+        command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker doc_hunter_service:api
 
     redis:
         image: redis
