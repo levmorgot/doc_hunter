@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends
 
 from endpoits.depends import get_free_times_repository

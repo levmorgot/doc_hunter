@@ -8,7 +8,7 @@ def redis_cache(key: str, ex: int):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
             redis = aioredis.from_url(
-                "redis://localhost", encoding="utf-8", decode_responses=True
+                "redis://redis", encoding="utf-8", decode_responses=True
             )
             async with redis.client() as conn:
                 cache = await conn.get(f"{key}{args[1:]}")
