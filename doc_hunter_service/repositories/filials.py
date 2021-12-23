@@ -12,7 +12,7 @@ class FilialsRepository:
 
     @speed_test
     @to_filial
-    @redis_cache("filials", 60)
+    @redis_cache("filials", 60*60*12)
     async def get_all_filials(self):
 
         url = f"{BASE_URL}filial"

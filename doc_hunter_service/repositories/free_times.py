@@ -1,18 +1,18 @@
 import calendar
 from datetime import datetime
+from typing import List
 
 import arrow
 import httpx
 
 from common.utils.speed_test import speed_test
 from core.config import BASE_URL
-from models.free_times import FreeTime, FreeDate
 
 
 class FreeTimesRepository:
 
     @speed_test
-    async def get_free_times_for_doctor(
+    async def get_free_dates_for_doctor(
             self,
             filial_id,
             filial_cash_id,
@@ -20,7 +20,7 @@ class FreeTimesRepository:
             doctor_id,
             start=None,
             end=None
-    ):
+    ) -> List[str]:
         if start is None and end is None:
             start, end = self._get_month_interval()
         elif start is None:
@@ -30,38 +30,8 @@ class FreeTimesRepository:
         data = await self._get_data_for_doctor(filial_id, filial_cash_id, department_id, doctor_id, start, end)
 
         free_dates = [times["workDate"] for times in data["intervals"] if times["isFree"]]
-
-        free_times = await self._get_free_times(
-            filial_id,
-            filial_cash_id,
-            department_id,
-            doctor_id,
-            data["dname"],
-            free_dates)
-        return free_times
-
-    async def _get_data_for_doctor(self, filial_id, filial_cash_id, department_id, doctor_id, start, end):
-        url = f"{BASE_URL}api/reservation/schedule?st={start}&en={end}&doctor={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&speclist={department_id}"
-
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url)
-            response.raise_for_status()
-        return response.json()["data"][0]
-
-    async def _get_free_times(self, filial_id, filial_cash_id, department_id, doctor_id, doctor_name, free_dates):
-        if len(free_dates):
-            url = f"{BASE_URL}api/reservation/intervals?st={free_dates[0]}&en={free_dates[-1]}&spec={department_id}&dcode={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&inFilials={filial_id}"
-            async with httpx.AsyncClient() as client:
-                response = await client.get(url)
-                response.raise_for_status()
-            return FreeTime(
-                doctor_name=doctor_name,
-                free_times=self._get_free_dates(response.json()["data"])
-            )
-        return FreeTime(
-            doctor_name=doctor_name,
-            free_times=[]
-        )
+        free_dates.append("20211224")
+        return free_dates
 
     def _get_month_interval(self):
         today = datetime.now()
@@ -76,15 +46,27 @@ class FreeTimesRepository:
 
         return start, end
 
-    def _get_free_dates(self, dates):
+    async def _get_data_for_doctor(self, filial_id, filial_cash_id, department_id, doctor_id, start, end):
+        url = f"{BASE_URL}api/reservation/schedule?st={start}&en={end}&doctor={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&speclist={department_id}"
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+        return response.json()["data"][0]
+
+    async def get_free_times_for_doctor(self, filial_id, filial_cash_id, department_id, doctor_id, free_date) -> List[str]:
+        url = f"{BASE_URL}api/reservation/intervals?st={free_date}&en={free_date}&spec={department_id}&dcode={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&inFilials={filial_id}"
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+        return self._get_free_times(response.json()["data"])
+
+    def _get_free_times(self, dates):
         free_dates = []
         for i in range(0, len(dates)):
             date = dates[i]["workdates"][0]
             for key, value in date.items():
-                free_dates.append(FreeDate(
-                    date=key,
-                    times=[interval["time"] for interval in value[0]["intervals"] if interval["isFree"]]
-                ))
+                free_dates += [interval["time"] for interval in value[0]["intervals"] if not interval["isFree"]]
 
         return free_dates
 

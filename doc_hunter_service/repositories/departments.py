@@ -11,7 +11,7 @@ class DepartmentsRepository:
 
     @speed_test
     @to_department
-    @redis_cache("departments", 60)
+    @redis_cache("departments", 60*60*12)
     async def get_all_departments_in_filial(self, filial_id, filial_cash_id):
         url = f"{BASE_URL}api/reservation/departments?f={filial_id}&s={filial_cash_id}"
 
