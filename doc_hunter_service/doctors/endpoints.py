@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from endpoits.depends import get_doctors_repository
-from models.doctors import Doctor
-from repositories.doctors import DoctorsRepository
+from common.endpoits.depends import get_doctors_repository
+from doctors.models import Doctor
+from doctors.repositories import DoctorsRepository
 
 router = APIRouter()
 

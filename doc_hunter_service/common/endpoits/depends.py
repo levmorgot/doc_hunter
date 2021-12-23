@@ -1,7 +1,7 @@
-from repositories.departments import DepartmentsRepository
-from repositories.doctors import DoctorsRepository
-from repositories.filials import FilialsRepository
-from repositories.free_times import FreeTimesRepository
+from departments.repositories import DepartmentsRepository
+from doctors.repositories import DoctorsRepository
+from filials.repositories import FilialsRepository
+from schedules.repositories import FreeTimesRepository
 
 
 def get_filial_repository() -> FilialsRepository:

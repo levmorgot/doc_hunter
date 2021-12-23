@@ -2,13 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from endpoits.depends import get_free_times_repository
-from repositories.free_times import FreeTimesRepository
+from common.endpoits.depends import get_free_times_repository
+from schedules.repositories import FreeTimesRepository
 
 router = APIRouter()
 
 
-@router.get("/dates/{filial_id}-{filial_cash_id}-{department_id}-{doctor_id}", response_model=List[str])
+@router.get("/{filial_id}-{filial_cash_id}-{department_id}-{doctor_id}/dates", response_model=List[str])
 async def get_free_dates_for_doctor(
         filial_id: int,
         filial_cash_id: int,
@@ -22,7 +22,7 @@ async def get_free_dates_for_doctor(
     return result
 
 
-@router.get("/times/{filial_id}-{filial_cash_id}-{department_id}-{doctor_id}-{date}", response_model=List[str])
+@router.get("/{filial_id}-{filial_cash_id}-{department_id}-{doctor_id}-{date}/times", response_model=List[str])
 async def get_free_times_for_doctor(
         filial_id: int,
         filial_cash_id: int,

@@ -4,7 +4,7 @@ from typing import List
 from common.utils.cache import redis_cache
 from common.utils.speed_test import speed_test
 from core.config import BASE_URL
-from models.departments import to_department, Department
+from departments.models import to_department, Department
 
 
 class DepartmentsRepository:

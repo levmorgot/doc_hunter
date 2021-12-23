@@ -1,15 +1,18 @@
 import fastapi
 import uvicorn
 
-from endpoits import departments, doctors, free_times, filials
+from departments import endpoints as department_endpoints
+from doctors import endpoints as doctor_endpoints
+from filials import endpoints as filial_endpoints
+from schedules import endpoints as schedule_endpoints
 
 api = fastapi.FastAPI()
 
 
-api.include_router(filials.router, prefix="/filials", tags=["filials"])
-api.include_router(departments.router, prefix="/departments", tags=["departments"])
-api.include_router(doctors.router, prefix="/doctors", tags=["doctors"])
-api.include_router(free_times.router, prefix="/free-times", tags=["free-times"])
+api.include_router(filial_endpoints.router, prefix="/filials", tags=["filials"])
+api.include_router(department_endpoints.router, prefix="/departments", tags=["departments"])
+api.include_router(doctor_endpoints.router, prefix="/doctors", tags=["doctors"])
+api.include_router(schedule_endpoints.router, prefix="/schedule", tags=["schedule"])
 
 if __name__ == "__main__":
     uvicorn.run("doc_hunter_service:api", port=8000, host="0.0.0.0", reload=True)

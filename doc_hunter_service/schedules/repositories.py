@@ -30,7 +30,6 @@ class FreeTimesRepository:
         data = await self._get_data_for_doctor(filial_id, filial_cash_id, department_id, doctor_id, start, end)
 
         free_dates = [times["workDate"] for times in data["intervals"] if times["isFree"]]
-        free_dates.append("20211224")
         return free_dates
 
     def _get_month_interval(self):
@@ -66,7 +65,7 @@ class FreeTimesRepository:
         for i in range(0, len(dates)):
             date = dates[i]["workdates"][0]
             for key, value in date.items():
-                free_dates += [interval["time"] for interval in value[0]["intervals"] if not interval["isFree"]]
+                free_dates += [interval["time"] for interval in value[0]["intervals"] if interval["isFree"]]
 
         return free_dates
 

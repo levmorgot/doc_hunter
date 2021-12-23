@@ -5,7 +5,7 @@ from common.utils.cache import redis_cache
 from common.utils.speed_test import speed_test
 
 from core.config import BASE_URL
-from models.filials import Filial, to_filial
+from filials.models import Filial, to_filial
 
 
 class FilialsRepository:
