@@ -10,17 +10,6 @@ router = APIRouter()
 
 
 @router.get("/{filial_id}-{filial_cash_id}-{department_id}", response_model=List[Doctor])
-async def get_all_doctors_in_department(
-        filial_id: int,
-        filial_cash_id: int,
-        department_id: int,
-        departments: DoctorsRepository = Depends(get_doctors_repository)
-):
-    result = await departments.get_all_doctors_in_department(filial_id, filial_cash_id, department_id)
-    return result
-
-
-@router.get("/{filial_id}-{filial_cash_id}-{department_id}/search/{search_string}", response_model=List[Doctor])
 async def search_doctors_in_department(
         filial_id: int,
         filial_cash_id: int,
