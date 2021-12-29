@@ -4,7 +4,7 @@ from typing import List
 
 class Filial(BaseModel):
     id: int
-    cash_id: int
+    cashId: int
     name: str
     address: str
     phone: str
@@ -17,7 +17,7 @@ def to_filial(func):
         for filial_json in result:
             filial = Filial(
                 id=filial_json["id"],
-                cash_id=filial_json["cashId"],
+                cashId=filial_json["cashId"],
                 name=filial_json["name"],
                 address=filial_json["address"],
                 phone=filial_json["phone"],
