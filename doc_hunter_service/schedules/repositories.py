@@ -7,6 +7,7 @@ import httpx
 
 from common.utils.speed_test import speed_test
 from core.config import BASE_URL
+from schedules.models import Times, Dates
 
 
 class FreeTimesRepository:
@@ -20,7 +21,7 @@ class FreeTimesRepository:
             doctor_id,
             start=None,
             end=None
-    ) -> List[str]:
+    ) -> List[Dates]:
         if start is None and end is None:
             start, end = self._get_month_interval()
         elif start is None:
@@ -29,7 +30,7 @@ class FreeTimesRepository:
             _, end = self._get_month_interval()
         data = await self._get_data_for_doctor(filial_id, filial_cash_id, department_id, doctor_id, start, end)
 
-        free_dates = [times["workDate"] for times in data["intervals"] if times["isFree"]]
+        free_dates = [Dates(date=times["workDate"]) for times in data["intervals"] if times["isFree"]]
         return free_dates
 
     def _get_month_interval(self):
@@ -53,7 +54,7 @@ class FreeTimesRepository:
             response.raise_for_status()
         return response.json()["data"][0]
 
-    async def get_free_times_for_doctor(self, filial_id, filial_cash_id, department_id, doctor_id, free_date) -> List[str]:
+    async def get_free_times_for_doctor(self, filial_id, filial_cash_id, department_id, doctor_id, free_date) -> List[Times]:
         url = f"{BASE_URL}api/reservation/intervals?st={free_date}&en={free_date}&spec={department_id}&dcode={doctor_id}&filialId={filial_id}&cashlist={filial_cash_id}&inFilials={filial_id}"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
@@ -65,7 +66,7 @@ class FreeTimesRepository:
         for i in range(0, len(dates)):
             date = dates[i]["workdates"][0]
             for key, value in date.items():
-                free_dates += [interval["time"] for interval in value[0]["intervals"] if interval["isFree"]]
+                free_dates += [Times(time=interval["time"]) for interval in value[0]["intervals"] if interval["isFree"]]
 
         return free_dates
 
